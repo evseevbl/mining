@@ -8,7 +8,7 @@ import (
 
 func NewEscapedJSONParser() *escapedJsonParser {
 	return &escapedJsonParser{
-		meta: "json_as_string",
+		meta: "unescape",
 	}
 }
 
@@ -25,6 +25,6 @@ func (p *escapedJsonParser) Parse(data []byte) (Nodes, error) {
 		return nil, errors.Wrap(err, "cannot unquote")
 	}
 	return map[Key]Node{
-		"val": NewNode([]byte(s), "escaped_json"),
+		"val": NewNode([]byte(s), p.meta),
 	}, nil
 }

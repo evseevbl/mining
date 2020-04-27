@@ -48,14 +48,14 @@ func (tb *treeBuilder) ProcessNode(n Node) error {
 }
 
 func (t *tree) PrettyPrint() {
-	fmt.Println("root")
+	fmt.Println(string(t.root.Data()))
 	t.printChildren(t.root, 0)
 }
 
 func (t *tree) printChildren(n Node, level int) {
 	for key, child := range n.GetChildren() {
-		fmt.Printf("-%s> %s= %s [%s]\n",
-			strings.Repeat("-", level),
+		fmt.Printf("%s> %s= %s [%s]\n",
+			strings.Repeat("--", level),
 			key,
 			string(t.shorten(child.Data())),
 			child.Meta(),
@@ -71,7 +71,7 @@ func (tree) shorten(b []byte) []byte {
 	case len(b) < 30:
 		return b
 	default:
-		s := b[0:10]
+		s := []byte(string(b[0:10]))
 		s = append(s, []byte(`...`)...)
 		return append(s, b[len(b)-10:len(b)-1]...)
 	}
