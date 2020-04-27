@@ -10,7 +10,8 @@ type Nodes map[Key]Node
 
 type Node interface {
 	Data() []byte
-	// WithResults(children Nodes) Node
+	SetChildren(children Nodes) Node
+	GetChildren() Nodes
 }
 
 type node struct {
@@ -31,8 +32,13 @@ func NewNode(data []byte, meta string) *node {
 	}
 }
 
-func (n *node) SetResults(children Nodes) {
-	return
+func (n *node) SetChildren(children Nodes) Node {
+	n.children = children
+	return n
+}
+
+func (n *node) GetChildren() Nodes {
+	return n.children
 }
 
 type Parser interface {
