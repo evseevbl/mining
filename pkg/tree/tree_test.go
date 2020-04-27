@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,6 +40,12 @@ func TestTreeBuilder_BuildTree(t *testing.T) {
 			nodes:    nil,
 			errCheck: a.NoError,
 		},
+		{
+			name:     "example from article",
+			data:     []byte(` c=0&load%5B%5D=jquery-core,jquery-migrate&load%5B%5D=utils&ver=3.8.2&json={%22firstName%22:%22Иван%22,%22lastName%22:%22Иванов%22,%22address%22:{%22postalCode%22:101101},%22phoneNumbers%22:[%22812123-1234%22,%22916123-4567%22]}`),
+			nodes:    nil,
+			errCheck: a.NoError,
+		},
 	}
 
 	for _, tc := range testCases {
@@ -48,9 +53,10 @@ func TestTreeBuilder_BuildTree(t *testing.T) {
 			tb := NewTreeBuilder(
 				NewJSONArrayParser(meta),
 				NewEscapedJSONParser(),
+				NewUrlDecoder(),
 			)
 			tree, _ := tb.BuildTree(tc.data)
-			fmt.Println(tree)
+			_ = tree
 		})
 	}
 }
