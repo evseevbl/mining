@@ -10,6 +10,7 @@ type Nodes map[Key]Node
 
 type Node interface {
 	Data() []byte
+	Meta() string
 	SetChildren(children Nodes) Node
 	GetChildren() Nodes
 }
@@ -22,6 +23,10 @@ type node struct {
 
 func (n *node) Data() []byte {
 	return n.data
+}
+
+func (n *node) Meta() string {
+	return n.meta
 }
 
 func NewNode(data []byte, meta string) *node {

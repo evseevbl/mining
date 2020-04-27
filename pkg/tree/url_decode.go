@@ -24,7 +24,6 @@ func (p *urlDecoder) Parse(data []byte) (Nodes, error) {
 		return nil, errors.New("nothing to decode")
 	}
 
-
 	ret, err := url.ParseQuery(str)
 	if err != nil {
 		return nil, errors.Wrap(err, "parseQuery")

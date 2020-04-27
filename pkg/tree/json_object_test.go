@@ -43,7 +43,7 @@ func TestJsonArrayParser_Parse(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			p := NewJSONArrayParser(meta)
+			p := NewJSONObjectParser()
 			nodes, err := p.Parse(tc.data)
 			tc.errCheck(err)
 			if err != nil {

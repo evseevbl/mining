@@ -9,7 +9,6 @@ import (
 func TestTreeBuilder_BuildTree(t *testing.T) {
 	a := assert.New(t)
 
-	meta := "json_array"
 	testCases := []struct {
 		name     string
 		data     []byte
@@ -51,12 +50,15 @@ func TestTreeBuilder_BuildTree(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			tb := NewTreeBuilder(
-				NewJSONArrayParser(meta),
+				NewJSONObjectParser(),
 				NewEscapedJSONParser(),
 				NewUrlDecoder(),
+				NewJSONListParser(),
 			)
-			tree, _ := tb.BuildTree(tc.data)
-			_ = tree
+			tree, err := tb.BuildTree(tc.data)
+			if err == nil {
+				tree.PrettyPrint()
+			}
 		})
 	}
 }

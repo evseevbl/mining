@@ -2,13 +2,15 @@ package tree
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/pkg/errors"
 )
 
-func NewJSONArrayParser(meta string) *jsonArrayParser {
+func NewJSONListParser() *jsonArrayParser {
 	return &jsonArrayParser{
-		meta: meta,
+		meta: "json_array",
 	}
 }
 
@@ -16,26 +18,21 @@ type jsonArrayParser struct {
 	meta string
 }
 
-type any struct {
-	data []byte
-}
-
-func (a *any) UnmarshalJSON(data []byte) error {
-	a.data = data
-	return nil
-}
-
 func (j *jsonArrayParser) Parse(data []byte) (Nodes, error) {
-	type obj map[string]any
+	type obj struct {
+		Array []any `json:"array"`
+	}
 
-	o := make(obj)
+	data = []byte(fmt.Sprintf(`{"array": %s}`, string(data)))
+
+	o := new(obj)
 	if err := json.Unmarshal(data, &o); err != nil {
 		return nil, errors.Wrap(ErrCannotParse, err.Error())
 	}
 
 	nodes := make(Nodes)
-	for k, v := range o {
-		nodes[Key(k)] = NewNode(v.data, j.meta)
+	for i, v := range o.Array {
+		nodes[Key(strconv.Itoa(i))] = NewNode(v.data, j.meta)
 	}
 	return nodes, nil
 }
