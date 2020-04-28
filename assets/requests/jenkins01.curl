@@ -1,0 +1,1 @@
+curl -X POST http://JENKINS_URL/job/JOB_NAME/build --form file0=@/home/user/Desktop/sample.xml --form json='{"parameter": [{"name":"harness/Task.xml", "file":"file0"}]}'
