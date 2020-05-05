@@ -1,4 +1,4 @@
-package tree
+package decoders
 
 import (
 	"testing"
@@ -9,18 +9,17 @@ import (
 func TestB64decoder_Parse(t *testing.T) {
 	a := assert.New(t)
 
-	meta := "b64_decode"
 	testCases := []struct {
 		name     string
 		data     []byte
-		nodes    Nodes
+		nodes    map[string][]byte
 		errCheck func(error, ...interface{}) bool
 	}{
 		{
 			name: "simple data",
 			data: []byte(`eyJ1c2VyX2lkIjogMTAwNTAwfQ==`),
-			nodes: map[Key]Node{
-				"decoded": NewNode([]byte(`{"user_id": 100500}`), meta),
+			nodes: map[string][]byte{
+				value: []byte(`{"user_id": 100500}`),
 			},
 			errCheck: a.NoError,
 		},
@@ -28,8 +27,8 @@ func TestB64decoder_Parse(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			p := NewBase64Decoder()
-			ret, err := p.Parse(tc.data)
+			p := AsBase64()
+			ret, err := p.Decode(tc.data)
 			tc.errCheck(err)
 			a.Equal(tc.nodes, ret)
 		})

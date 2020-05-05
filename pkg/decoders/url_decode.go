@@ -1,4 +1,4 @@
-package tree
+package decoders
 
 import (
 	"fmt"
@@ -8,17 +8,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-func NewUrlDecoder() *urlDecoder {
+func UrlDecode() *urlDecoder {
 	return &urlDecoder{
-		meta: "url_decode",
+		name: "url_decode",
 	}
 }
 
 type urlDecoder struct {
-	meta string
+	name
 }
 
-func (p *urlDecoder) Parse(data []byte) (Nodes, error) {
+func (p *urlDecoder) Decode(data []byte) (map[string][]byte, error) {
 	str := string(data)
 	if !strings.ContainsAny(str, "&=") {
 		return nil, errors.New("nothing to decode")
@@ -29,16 +29,15 @@ func (p *urlDecoder) Parse(data []byte) (Nodes, error) {
 		return nil, errors.Wrap(err, "parseQuery")
 	}
 
-	nodes := make(Nodes)
+	results := make(map[string][]byte)
 	for key, values := range ret {
 		if len(values) == 1 {
-			nodes[Key(key)] = NewNode([]byte(values[0]), p.meta)
+			results[key] = []byte(values[0])
 			continue
 		}
 		for i, val := range values {
-			nodeKey := fmt.Sprintf("%s_%02d", key, i)
-			nodes[Key(nodeKey)] = NewNode([]byte(val), p.meta)
+			results[fmt.Sprintf("%s_%02d", key, i)] = []byte(val)
 		}
 	}
-	return nodes, nil
+	return results, nil
 }

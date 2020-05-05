@@ -1,4 +1,4 @@
-package tree
+package decoders
 
 import (
 	"encoding/json"
@@ -8,17 +8,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-func NewJSONListParser() *jsonArrayParser {
-	return &jsonArrayParser{
-		meta: "json_array",
+func AsJSONArray() *jsonArrayDecoder {
+	return &jsonArrayDecoder{
+		name: "json_array",
 	}
 }
 
-type jsonArrayParser struct {
-	meta string
+type jsonArrayDecoder struct {
+	name
 }
 
-func (j *jsonArrayParser) Parse(data []byte) (Nodes, error) {
+func (j *jsonArrayDecoder) Decode(data []byte) (map[string][]byte, error) {
 	type obj struct {
 		Array []any `json:"array"`
 	}
@@ -30,9 +30,9 @@ func (j *jsonArrayParser) Parse(data []byte) (Nodes, error) {
 		return nil, errors.Wrap(ErrCannotParse, err.Error())
 	}
 
-	nodes := make(Nodes)
+	values := make(map[string][]byte)
 	for i, v := range o.Array {
-		nodes[Key(strconv.Itoa(i))] = NewNode(v.data, j.meta)
+		values[strconv.Itoa(i)] = v.data
 	}
-	return nodes, nil
+	return values, nil
 }

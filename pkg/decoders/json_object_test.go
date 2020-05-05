@@ -1,4 +1,4 @@
-package tree
+package decoders
 
 import (
 	"testing"
@@ -9,33 +9,32 @@ import (
 func TestJsonArrayParser_Parse(t *testing.T) {
 	a := assert.New(t)
 
-	meta := "json_array"
 	testCases := []struct {
 		name     string
 		data     []byte
-		nodes    Nodes
+		values   map[string][]byte
 		errCheck func(error, ...interface{}) bool
 	}{
 		{
 			name:     "empty data",
 			data:     []byte(``),
-			nodes:    nil,
+			values:   nil,
 			errCheck: a.Error,
 		},
 		{
 			name: "json string",
 			data: []byte(`{"a" : "b"}`),
-			nodes: map[Key]Node{
-				"a": NewNode([]byte(`"b""`), meta),
+			values: map[string][]byte{
+				"a": []byte(`"b""`),
 			},
 			errCheck: a.NoError,
 		},
 		{
 			name: "json obj",
 			data: []byte(`{ "a" : {"foo" : "bar"}, "b": null}`),
-			nodes: map[Key]Node{
-				"a": NewNode([]byte(`{"foo":"bar"}`), meta),
-				"b": NewNode([]byte(`null`), meta),
+			values: map[string][]byte{
+				"a": []byte(`{"foo":"bar"}`),
+				"b": []byte(`null`),
 			},
 			errCheck: a.NoError,
 		},
@@ -43,11 +42,11 @@ func TestJsonArrayParser_Parse(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			p := NewJSONObjectParser()
-			nodes, err := p.Parse(tc.data)
+			p := AsJSONObject()
+			nodes, err := p.Decode(tc.data)
 			tc.errCheck(err)
 			if err != nil {
-				a.Equal(tc.nodes, nodes)
+				a.Equal(tc.values, nodes)
 			}
 		})
 	}

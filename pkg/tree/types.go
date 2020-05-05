@@ -1,9 +1,5 @@
 package tree
 
-import (
-	"github.com/pkg/errors"
-)
-
 type Key string
 
 type Nodes map[Key]Node
@@ -25,6 +21,7 @@ func (n *node) Data() []byte {
 	return n.data
 }
 
+// Meta contains information about the decoder
 func (n *node) Meta() string {
 	return n.meta
 }
@@ -46,10 +43,3 @@ func (n *node) GetChildren() Nodes {
 	return n.children
 }
 
-type Parser interface {
-	Parse([]byte) (Nodes, error)
-}
-
-var (
-	ErrCannotParse = errors.New("cannot parse")
-)

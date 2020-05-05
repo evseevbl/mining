@@ -1,4 +1,4 @@
-package tree
+package decoders
 
 type any struct {
 	data []byte
