@@ -8,6 +8,31 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestProtoDecoder_decode(t *testing.T) {
+	a := assert.New(t)
+
+	testCases := []struct {
+		fname string
+		exp   interface{}
+	}{
+		{
+			fname: "testdata/person.buff",
+			exp:   nil,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.fname, func(t *testing.T) {
+			d := AsProtoMessage()
+			data, err := ioutil.ReadFile(tc.fname)
+			a.NoError(err, "cannot read test file")
+			d.decode(data)
+			// a.NoError(err)
+			// a.Equal(tc.exp, exp)
+		})
+	}
+}
+
 func TestProtoDecoder_Decode(t *testing.T) {
 	a := assert.New(t)
 
@@ -16,7 +41,7 @@ func TestProtoDecoder_Decode(t *testing.T) {
 		exp   interface{}
 	}{
 		{
-			fname: "testdata/01.buff",
+			fname: "testdata/persons.buff",
 			exp:   nil,
 		},
 	}
