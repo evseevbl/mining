@@ -72,7 +72,6 @@ func (tb *treeBuilder) ProcessNode(n Node) error {
 		}
 		return nil
 	}
-	return errors.New("all decoders failed")
 }
 
 type decoderResult struct {
